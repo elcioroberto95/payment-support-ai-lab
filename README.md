@@ -49,20 +49,51 @@ python -m venv .venv
 
 Crie `test_pagamentos.py`, importe a função e use `assert` para verificar seu retorno. Cubra os casos `paid`, `failed`, `refunded`, status ausente e status desconhecido. Comece com um teste simples e depois use `pytest.mark.parametrize` para reaproveitar o mesmo teste com entradas diferentes.
 
+### Aula 3 · Classes e objetos com eventos de pagamento
+
+Depois de testar a função, crie uma classe `EventoPagamento` para praticar programação orientada a objetos (POO).
+
+1. Use `class` para definir a classe e `__init__(self, pedido_id, status=None)` para guardar o ID e o status nos atributos `self.pedido_id` e `self.status`. Dentro de um método, `self` é o objeto que recebeu a chamada.
+2. Crie dois objetos, um com `EventoPagamento(101, "paid")` e outro com `EventoPagamento(103)`. Leia seus atributos e confira que cada objeto tem seus próprios valores.
+3. Escreva um método `descricao(self)` que devolva uma f-string com o ID e o status. Chame o método nos dois objetos e teste o resultado com `assert`.
+
+Mantenha `decidir_acao(evento)` e seus testes. Na etapa de FastAPI, pratique herança ao declarar os modelos de entrada e saída com `BaseModel`. Na integração com Ollama, use uma classe `OllamaClient` para guardar a URL e o nome do modelo e reunir as chamadas em métodos.
+
+### Sintaxe para praticar no laboratório
+
+- **Eventos e testes.** Variáveis, números, strings, booleanos, `None`, listas, dicionários, condições, loops, funções, parâmetros com valor padrão, `return`, imports e `assert`.
+- **Leitura de JSON.** Use `with` para abrir o arquivo e `try/except` para tratar arquivo ausente e JSON inválido.
+- **Classes e API.** Pratique instâncias, atributos e métodos na Aula 3. Use anotações de tipo, herança e decoradores nas rotas e nos modelos de entrada e saída.
+- **RAG.** Pratique compreensão de listas ao filtrar trechos e `sorted(..., key=...)` ao ordenar os resultados pela pontuação.
+
 ## Roadmap até a entrevista
 
 | Período | Etapa | Critério de conclusão |
 | --- | --- | --- |
-| 26–29/11 | **Python e pytest** · Funções, listas, dicionários, imports, tipos, leitura de JSON e `try/except`. | Ler eventos de um arquivo JSON, tratar um arquivo inválido e passar os casos de teste da regra de pagamentos. Usar uma fixture quando houver dados compartilhados entre testes. |
-| 30/11–01/12 | **FastAPI** · Reaproveitar a regra em `POST /payments/events` com modelos Pydantic para entrada e saída. | Demonstrar um evento válido e uma requisição fora do contrato em testes HTTP. |
-| 02/12 | **Ollama pela VPN** · Criar `POST /incidents/classify` e integrar a API do modelo. Configurar endereço e modelo pelo ambiente. | Rodar uma chamada real com um relato fictício e devolver categoria, resumo e próxima ação em JSON validado. Escrever testes com resposta simulada, timeout e saída inválida. |
+| 26–29/11 | **Python, pytest e POO básica** · Praticar a regra de pagamentos, escrever testes, ler JSON e criar a classe da Aula 3. | Ler eventos de um arquivo JSON, tratar um arquivo inválido e passar os testes. Criar duas instâncias e verificar o retorno do método. Usar uma fixture quando houver dados compartilhados entre testes. |
+| 30/11–01/12 | **FastAPI** · Reaproveitar a regra em `POST /payments/events` com modelos Pydantic de entrada e saída, anotações de tipo e um decorador de rota. | Demonstrar um evento válido e uma requisição fora do contrato em testes HTTP. |
+| 02/12 | **Ollama pela VPN e saída estruturada** · Criar `POST /incidents/classify` e configurar o cliente Ollama com endereço e modelo pelo ambiente. Gerar o JSON Schema com Pydantic, enviar no campo `format` do Ollama e validar a resposta com a mesma classe Pydantic. | Rodar uma chamada real com um relato fictício e devolver `categoria`, `resumo` e `proxima_acao`. Testar resposta simulada válida, timeout e saída fora do contrato. |
 | 03/12 | **Extração de documentos** · Ler um PDF com texto selecionável e extrair dados de um runbook. | Produzir JSON com código de erro, causa, procedimento e página de origem. Conferir os campos com o PDF. |
 | 04–05/12 | **RAG e embeddings** · Dividir três runbooks fictícios em trechos, guardar metadados de origem e buscar por similaridade. | Confirmar um modelo de embeddings no Ollama da VPN, recuperar trechos relevantes e responder citando documento e seção ou página. Se faltar evidência, devolver uma resposta explícita de insuficiência. Começar com busca local e usar PostgreSQL com pgvector se houver tempo. |
-| 06/12 | **Evals** · Criar cinco perguntas fixas com fonte e resultado esperados, incluindo paráfrase e pergunta sem resposta. | Comparar busca textual e vetorial com o mesmo modelo e prompt. Registrar recuperação do trecho certo, fidelidade à fonte, validade do JSON e latência. Anotar uma falha e como foi investigada. |
-| 07/12 | **Tool calling, MCP e agente** · Criar uma consulta de status de pagamento somente leitura e expô-la por MCP. Usar LangGraph se o fluxo principal estiver pronto. | Demonstrar um caso em que basta o runbook, outro em que é preciso consultar o pedido e um terceiro em que falta o ID. Tratar pedido inexistente e indisponibilidade da ferramenta. |
+| 06/12 | **Evals e logs** · Preparar os cinco casos abaixo e rodar os três de RAG. Registrar os trechos recuperados, a chamada da ferramenta quando houver, a validação do JSON e o tempo por etapa. | Comparar busca textual e vetorial com o mesmo modelo e prompt. Medir se o trecho esperado ficou entre os três primeiros, se a resposta é fiel à fonte, se o JSON é válido e quanto tempo o fluxo levou. Usar os logs para investigar uma falha. |
+| 07/12 | **Roteamento e tool calling** · Começar com uma função Python de consulta de status somente leitura. Expor a função via MCP se houver tempo e usar LangGraph se o fluxo principal estiver pronto. | Rodar os dois casos de consulta de status abaixo e confirmar quando a função deve ser chamada. Tratar pedido inexistente e indisponibilidade da ferramenta. |
 | 08/12 | **Simulação da entrevista** · Ensaiar a demo e revisar decisões técnicas. | Em cinco minutos, mostrar uma resposta com fonte, uma falha e o teste ou a avaliação que ajuda a explicá-la. |
 
-Se o prazo apertar, priorize **Python, testes, FastAPI, uma chamada real ao Ollama, RAG pequeno e cinco casos de avaliação**. MCP e o agente podem ficar como extensões da demo.
+Se o prazo apertar, priorize **Python, testes, FastAPI, saída estruturada com uma chamada real ao Ollama, RAG pequeno e cinco casos de avaliação**. MCP e o agente podem ficar como extensões da demo.
+
+### Casos de avaliação da demo
+
+Ao criar os runbooks, anote o documento e a seção esperados nos dois casos com fonte. Use essas referências para conferir se o trecho certo apareceu entre os três primeiros.
+
+| Pergunta | Comportamento esperado |
+| --- | --- |
+| O que significa o erro `PAY-042`? | Recuperar o trecho do código no runbook fictício e citar a fonte. |
+| O cliente pagou, mas o pedido ainda aparece como pendente. O que faço? | Recuperar o trecho sobre pagamentos pendentes e orientar com base nele, sem consultar a API. |
+| Qual é o prazo para contestar uma transferência internacional? | Manter esse assunto fora dos runbooks e verificar se o copiloto informa que a evidência é insuficiente. |
+| Qual é o status do pedido 103? | Consultar a API simulada com o ID 103 e informar o status retornado. |
+| Qual é o status do meu pedido? | Pedir o ID do pedido antes de consultar a API. |
+
+Se houver tempo, compare também a busca híbrida, que combina busca textual e vetorial. Use os mesmos casos para verificar se a combinação melhora a recuperação por código exato e por paráfrase.
 
 ## Configuração do Ollama
 
@@ -81,3 +112,4 @@ Na etapa de integração, confirme a conectividade pela VPN e os modelos dispon�
 - [Primeiros passos com pytest](https://docs.pytest.org/en/stable/getting-started.html)
 - [Tutorial do FastAPI](https://fastapi.tiangolo.com/tutorial/)
 - [API do Ollama](https://docs.ollama.com/api/introduction)
+- [Saída estruturada no Ollama](https://docs.ollama.com/capabilities/structured-outputs)
