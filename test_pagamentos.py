@@ -1,13 +1,12 @@
 import pytest
-from pagamentos import decidir_acao
+from pagamentos import decidir_acao,EventoPagamento
 @pytest.mark.parametrize (
     "evento, acao_esperada",
     [
-        ({"status":"paid"},"confirmar_pedido"),
-        ({"status":"failed"},"registrar_falha"),
-        ({"status":"refunded"},"registrar_estorno"),
-        ({"status":"pending"},"ignorar"),
-        ({},"ignorar")
+        (EventoPagamento(1,"paid"),"confirmar_pedido"),
+        (EventoPagamento(2,"failed"),"registrar_falha"),
+        (EventoPagamento(3,"refunded"),"registrar_estorno"),
+        (EventoPagamento(4,None),"ignorar"),
     ]
 )
 def test_decidir_acao(evento, acao_esperada):

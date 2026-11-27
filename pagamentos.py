@@ -1,11 +1,15 @@
+class EventoPagamento:
+  def __init__(self, pedido_id, status=None):
+    self.pedido_id = pedido_id
+    self.status = status
 eventos = [
-    {"id":1,"status":"paid"},
-    {"id":2,"status":"failed"},
-    {"id":3},
-    {"id":2,"status":"refunded"},
+    EventoPagamento(1,"paid"),
+    EventoPagamento(2,"failed"),
+    EventoPagamento(3,None),
+    EventoPagamento(4,"refunded")
 ]
 def decidir_acao(evento):
-  status = evento.get("status")
+  status = evento.status
   if(status == "paid"):
     return "confirmar_pedido"
   elif(status == "failed"):
@@ -17,4 +21,4 @@ def decidir_acao(evento):
 
 for event in eventos:
    acao = decidir_acao(event)
-   print(f"{event['id']}: {acao}")
+   print(f"{event.pedido_id}: {acao}")
